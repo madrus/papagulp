@@ -19,6 +19,8 @@ build
 **/test/coverage
 report
 
+# Ignore My Files
+.tmp
 
 # mongo db
 ###################
