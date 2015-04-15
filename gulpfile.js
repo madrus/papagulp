@@ -34,8 +34,29 @@ gulp.task('clean-styles', function (done) {
     clean(files, done);
 });
 
-gulp.task('less-watcher', function(){
+gulp.task('less-watcher', function () {
     gulp.watch([config.less], ['styles']); // watch the dirs (1st parm) and kick the tasks (2nd parm)
+});
+
+gulp.task('wiredep', function () {
+    log('Wire up the bower css, js and our app js into the html');
+    var options = config.getWiredepDefaultOptions();
+    var wiredep = require('wiredep').stream;
+
+    return gulp
+        .src(config.index)
+        .pipe(wiredep(options))
+        .pipe($.inject(gulp.src(config.js)))
+        .pipe(gulp.dest(config.client));
+});
+
+gulp.task('inject', ['wiredep', 'styles'], function () {
+    log('Wire up our app css into the html, after first calling Less and wiredep');
+
+    return gulp
+        .src(config.index)
+        .pipe($.inject(gulp.src(config.css)))
+        .pipe(gulp.dest(config.client));
 });
 
 ///////////////
