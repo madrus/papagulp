@@ -3,7 +3,6 @@ module.exports = function () {
     var clientApp = client + 'app/';
     var server = './src/server/';
     var temp = './.tmp/';
-
     var config = {
         /**
          * Files paths
@@ -32,15 +31,12 @@ module.exports = function () {
             directory: './bower_components/',
             ignorePath: '../..' // because bower_components are ../.. from index.html
         },
-
         /**
          *  Node settings
          */
         defaultPort: 7203,
         nodeServer: './src/server/app.js'
-
     };
-
     config.getWiredepDefaultOptions = function () {
         return {
             bowerJson: config.bower.json,
@@ -48,6 +44,5 @@ module.exports = function () {
             ignorePath: config.bower.ignorePath
         };
     };
-
     return config;
 };

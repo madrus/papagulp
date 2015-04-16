@@ -3,7 +3,9 @@ var args = require('yargs').argv;
 var browserSync = require('browser-sync');
 var config = require('./gulp.config')(); // .js may be left out
 var del = require('del');
-var $ = require('gulp-load-plugins')({lazy: true});
+var $ = require('gulp-load-plugins')({
+    lazy: true
+});
 var port = process.env.PORT || config.defaultPort;
 
 gulp.task('vet', function () {
@@ -27,7 +29,9 @@ gulp.task('styles', ['clean-styles'], function () {
         .src(config.less)
         .pipe($.plumber())
         .pipe($.less())
-        .pipe($.autoprefixer({browsers: ['last 2 version', '> 5%']}))
+        .pipe($.autoprefixer({
+            browsers: ['last 2 version', '> 5%']
+        }))
         .pipe(gulp.dest(config.temp));
 });
 
@@ -89,7 +93,7 @@ gulp.task('serve-dev', ['inject'], function () {
         .on('exit', function () {
             log('*** nodemon exited cleanly');
         });
-})
+});
 
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
@@ -117,12 +121,12 @@ function startBrowserSync() {
         reloadDelay: 1000
     };
     browserSync(options);
-};
+}
 
 function clean(path, done) {
     log('Cleaning: ' + $.util.colors.blue(path));
     del(path, done);
-};
+}
 
 function log(msg) {
     if (typeof (msg) === 'object') {

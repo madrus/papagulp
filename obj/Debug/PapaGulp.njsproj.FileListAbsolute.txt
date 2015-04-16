@@ -1,2 +1,0 @@
-D:\ar\_github\papagulp\obj\Debug\PapaGulp.njsprojResolveAssemblyReference.cache
-D:\ar\_github\papagulp\bin\Microsoft.NodejsTools.WebRole.dll
