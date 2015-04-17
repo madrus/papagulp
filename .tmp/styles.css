@@ -233,7 +233,7 @@ a.btn {
   border: 0 !important;
 }
 .bviolet {
-  background: #932ab6 !important;
+  background: red !important;
   color: #fff !important;
   border: 0 !important;
 }
@@ -308,7 +308,7 @@ a.btn {
   color: #fa3031 !important;
 }
 .violet {
-  color: #932ab6 !important;
+  color: red !important;
 }
 /* Modal */
 .modal-header {
@@ -586,7 +586,7 @@ form label {
 .sidebar .navi > li.nviolet > a:hover,
 .sidebar .navi > li.open.nviolet > a,
 .sidebar .navi > li.current.nviolet > a {
-  background: #932ab6 !important;
+  background: red !important;
   transition: background 0.5s ease;
 }
 /* Sidebar dropdown */
@@ -787,8 +787,8 @@ form label {
   color: #fff;
 }
 .widget.wviolet .widget-head {
-  background-color: #932ab6;
-  border: 1px solid #932ab6;
+  background-color: red;
+  border: 1px solid red;
   color: #fff;
 }
 .widget.wred .widget-head .widget-icons a,

@@ -97,16 +97,32 @@ gulp.task('serve-dev', ['inject'], function () {
 
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
+function changeEvent(event) {
+    //var srcPattern = new RegExp('/**(?=/' + config.source + ')/');
+    //log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type + ' changed');
+    log('File ' + event.path + ' ' + event.type + ' changed');
+}
+
 function startBrowserSync() {
     if (browserSync.active) {
         return;
     }
 
     log('Starting browser-sync on port ' + port);
+
+    gulp.watch([config.less], ['styles']) // watch the dirs (1st parm) and kick the tasks (2nd parm)
+        .on('change', function (event) {
+            changeEvent(event);
+        });
+
     var options = {
         proxy: 'localhost:' + port,
         port: 3000,
-        files: [config.client + '**/*.*'],
+        files: [
+            config.client + '**/*.*',
+            '!' + config.less, // don't watch Less files here
+            config.temp + '**/*.css'
+        ],
         ghostMode: {
             clicks: true,
             location: true,
@@ -118,7 +134,7 @@ function startBrowserSync() {
         logLevel: 'debug',
         logPrefix: 'gulp-patterns',
         notify: true,
-        reloadDelay: 1000
+        reloadDelay: 0 //1000 // ms
     };
     browserSync(options);
 }
