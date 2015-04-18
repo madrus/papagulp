@@ -72,4 +72,4 @@ journal
 ehthumbs.db
 Icon?
 Thumbs.db
-
+/node_modules/
