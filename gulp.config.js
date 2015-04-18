@@ -13,8 +13,12 @@ module.exports = function () {
             './src/**/*.js',
             './*.js'
         ],
+        build: './build/', // some people do './dist/' or'./prod/' or'./production/'
         client: client,
         css: temp + 'styles.css',
+        fonts: './bower_components/font-awesome/fonts/**/*.*',
+        htmlTemplates: clientApp + '**/*.html', // this does not hit the index.html !!!
+        images: client + 'images/**/*.*',
         index: client + 'index.html',
         js: [
             clientApp + '**/*.module.js',
@@ -24,6 +28,18 @@ module.exports = function () {
         less: client + 'styles/styles.less',
         server: server,
         temp: temp,
+
+        /**
+         * template cache
+         */
+        templateCache: {
+            file: 'templates.js', // choose any name you like
+            options: {
+                module: 'app.core',
+                standAlone: false, // it depends on the existing module 'app.core'
+                root: 'app/' // for routes
+            }
+        },
 
         /**
          * browser sync

@@ -4,11 +4,12 @@ var args = require('yargs').argv;
 var browserSync = require('browser-sync');
 var config = require('./gulp.config')(); // .js may be left out
 var del = require('del');
-var $ = require('gulp-load-plugins')({
-    lazy: true
-});
-
+var $ = require('gulp-load-plugins')({lazy: true});
 var port = process.env.PORT || config.defaultPort;
+
+gulp.task('help', $.taskListing);
+
+gulp.task('default', ['help']);
 
 gulp.task('vet', function () {
     log('Analysing source with JSHint and JSCS');
@@ -24,6 +25,23 @@ gulp.task('vet', function () {
         .pipe($.jshint.reporter('fail'));
 });
 
+gulp.task('fonts', ['clean-fonts'], function () {
+    log('Copying fonts');
+
+    return gulp
+        .src(config.fonts)
+        .pipe(gulp.dest(config.build + 'fonts'));
+});
+
+gulp.task('images', ['clean-images'], function () {
+    log('Compressing and copying images');
+
+    return gulp
+        .src(config.images)
+        .pipe($.imagemin({optimizationLevel: 4})) // default is 3
+        .pipe(gulp.dest(config.build + 'images'));
+});
+
 gulp.task('styles', ['clean-styles'], function () {
     log('Compiling Less --> CSS');
 
@@ -37,13 +55,48 @@ gulp.task('styles', ['clean-styles'], function () {
         .pipe(gulp.dest(config.temp));
 });
 
+gulp.task('clean', function (done) {
+    var delConfig = [].concat(config.build, config.temp);
+    log('Cleaning: ' + $.util.colors.blue(delConfig));
+    del(delConfig, done);
+});
+
+gulp.task('clean-fonts', function (done) {
+    clean(config.build + 'fonts/**/*.*', done);
+});
+
+gulp.task('clean-images', function (done) {
+    clean(config.build + 'images/**/*.*', done);
+});
+
 gulp.task('clean-styles', function (done) {
-    var files = config.temp + '**/*.css';
+    clean(config.temp + '**/*.css', done);
+});
+
+gulp.task('clean-code', function (done) {
+    var files = [].concat(
+        config.temp + '**/*.js',
+        config.build + '**/*.html',
+        config.build + 'js/**/*.js'
+    );
     clean(files, done);
 });
 
 gulp.task('less-watcher', function () {
     gulp.watch([config.less], ['styles']); // watch the dirs (1st parm) and kick the tasks (2nd parm)
+});
+
+gulp.task('template-cache', ['clean-code'], function () {
+    log('Creating AngularJS $templateCache');
+
+    return gulp
+        .src(config.htmlTemplates)
+        .pipe($.minifyHtml({empty: true})) // remove any empty tags in HTML
+        .pipe($.angularTemplatecache(
+            config.templateCache.file, // location of the file
+            config.templateCache.options
+        ))
+        .pipe(gulp.dest(config.temp));
 });
 
 gulp.task('wiredep', function () {
