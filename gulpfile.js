@@ -161,9 +161,9 @@ function clean(path, done) {
 
 function log(msg) {
     if (typeof (msg) === 'object') {
-        for (var item in msg) {
-            if (msg.hasOwnProperty(item)) {
-                $.util.log($.util.colors.blue(item + ': ' + msg[item]));
+        for (var prop in msg) {
+            if (msg.hasOwnProperty(prop)) {
+                $.util.log($.util.colors.blue(prop + ': ' + msg[prop]));
             }
         }
     } else {
