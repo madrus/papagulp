@@ -79,13 +79,20 @@ gulp.task('serve-dev', ['inject'], function () {
     };
 
     return $.nodemon(nodeOptions)
-        .on('restart', ['vet'], function (ev) {
-            log('*** nodemon restarted');
+        //.on('restart', ['vet'], function (ev) { // it seems that 'vet' is not kicked off
+        .on('restart', function (ev) {
+            log('*** nodemon restarting...');
             log('files changed on restart:\n' + ev);
+            setTimeout(function () {
+                browserSync.notify('BrowserSync is reloading now...');
+                browserSync.reload({stream: false}); // don't pull the gulp stream (but you can if you want!)
+            }, config.browserReloadDelay);
+            log('*** nodemon restarted');
         })
         .on('start', function () {
-            log('*** nodemon started');
+            log('*** nodemon starting...');
             startBrowserSync();
+            log('*** nodemon started');
         })
         .on('crash', function () {
             log('*** nodemon crashed: script crashed for some reason');
@@ -98,13 +105,16 @@ gulp.task('serve-dev', ['inject'], function () {
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
 function changeEvent(event) {
-    //var srcPattern = new RegExp('/**(?=/' + config.source + ')/');
-    //log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type + ' changed');
-    log('File ' + event.path + ' ' + event.type + ' changed');
+    // unfortunately this RegExp of John Papa does not work:
+    // it gives UNDEFINED on config.source
+    //var srcPattern = new RegExp('/*(?=/' + config.source + ')/');
+    //log('srcPattern = ' + srcPattern);
+    //log('File ' + event.path.replace(srcPattern, '') + ' ' + event.type);
+    log('File ' + event.path + ' ' + event.type);
 }
 
 function startBrowserSync() {
-    if (browserSync.active) {
+    if (args.nosync || browserSync.active) {
         return;
     }
 
@@ -115,12 +125,15 @@ function startBrowserSync() {
             changeEvent(event);
         });
 
+    // don't watch Less files
+    // inject changes only, otherwise everything
+    // reloadDelay is in ms
     var options = {
         proxy: 'localhost:' + port,
         port: 3000,
         files: [
             config.client + '**/*.*',
-            '!' + config.less, // don't watch Less files here
+            '!' + config.less,
             config.temp + '**/*.css'
         ],
         ghostMode: {
@@ -129,12 +142,12 @@ function startBrowserSync() {
             forms: true,
             scroll: true
         },
-        injectChanges: true, // inject changes only, otherwise everything
+        injectChanges: true,
         logFileChanges: true,
         logLevel: 'debug',
         logPrefix: 'gulp-patterns',
         notify: true,
-        reloadDelay: 0 //1000 // ms
+        reloadDelay: 0
     };
     browserSync(options);
 }
