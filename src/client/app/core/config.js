@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     var core = angular.module('app.core');
@@ -24,10 +24,10 @@
     core.config(configure);
 
     configure.$inject = ['$compileProvider', '$logProvider',
-                         'routerHelperProvider', 'exceptionHandlerProvider'];
+        'routerHelperProvider', 'exceptionHandlerProvider'];
     /* @ngInject */
-    function configure ($compileProvider, $logProvider,
-                         routerHelperProvider, exceptionHandlerProvider) {
+    function configure($compileProvider, $logProvider,
+                       routerHelperProvider, exceptionHandlerProvider) {
         $compileProvider.debugInfoEnabled(false);
 
         // turn debugging off/on (no info or warn)
@@ -45,6 +45,7 @@
             };
 
             ready.$inject = ['dataservice'];
+            // if we were not using $inject explicitely, we could also put a code hint
             /* @ngInject */
             function ready(dataservice) {
                 return dataservice.ready();

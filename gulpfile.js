@@ -130,8 +130,9 @@ gulp.task('optimize', ['inject'], function () {
     log('OPTIMIZE: optimizing the javascript, css, html');
 
     var assets = $.useref.assets({searchPath: './'});
-    var cssFilter = $.filter('**/*.css');
-    var jsFilter = $.filter('**/*.js');
+    var cssFilter = $.filter('**/' + config.optimized.css);
+    var jsAppFilter = $.filter('**/' + config.optimized.app);
+    var jsLibFilter = $.filter('**/' + config.optimized.lib);
 
     return gulp
         .src(config.index)
@@ -140,9 +141,14 @@ gulp.task('optimize', ['inject'], function () {
         .pipe(cssFilter) // filter down to css files only
         .pipe($.csso()) // optimize and minify the css files
         .pipe(cssFilter.restore()) // restore filter to all files
-        .pipe(jsFilter) // filter down to js files only
+        .pipe(jsLibFilter)// filter down to lib.js file only
         .pipe($.uglify()) // minify and mangle the js files
-        .pipe(jsFilter.restore()) // restore filter to all files
+        .pipe(jsLibFilter.restore()) // restore filter to all files
+        .pipe(jsAppFilter)// filter down to app.js file only
+        //.pipe($.ngAnnotate({add: true})) // adding declarations is default
+        .pipe($.ngAnnotate())
+        .pipe($.uglify()) // minify and mangle the js files
+        .pipe(jsAppFilter.restore()) // restore filter to all files
         .pipe(assets.restore()) // concatenate them to app's and lib's
         .pipe($.useref()) // merge all links inside the index.html
         .pipe(gulp.dest(config.build));
@@ -244,7 +250,7 @@ function startBrowserSync(isDev) {
         logLevel: 'warn', // 'debug', 'info', 'warn' or 'silent'
         logPrefix: 'BROWSERSYNC', // was initially 'gulp-patterns'
         notify: true,
-        reloadDelay: 2000 // reloadDelay in ms
+        reloadDelay: 0 // reloadDelay in ms
     };
 
     browserSync(options);
