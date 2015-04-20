@@ -130,12 +130,19 @@ gulp.task('optimize', ['inject'], function () {
     log('OPTIMIZE: optimizing the javascript, css, html');
 
     var assets = $.useref.assets({searchPath: './'});
-    var templateCache = config.temp + config.templateCache.file;
+    var cssFilter = $.filter('**/*.css');
+    var jsFilter = $.filter('**/*.js');
 
     return gulp
         .src(config.index)
         .pipe($.plumber())
         .pipe(assets) // find all the assets
+        .pipe(cssFilter) // filter down to css files only
+        .pipe($.csso()) // optimize and minify the css files
+        .pipe(cssFilter.restore()) // restore filter to all files
+        .pipe(jsFilter) // filter down to js files only
+        .pipe($.uglify()) // minify and mangle the js files
+        .pipe(jsFilter.restore()) // restore filter to all files
         .pipe(assets.restore()) // concatenate them to app's and lib's
         .pipe($.useref()) // merge all links inside the index.html
         .pipe(gulp.dest(config.build));
