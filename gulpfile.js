@@ -12,7 +12,7 @@ gulp.task('help', $.taskListing);
 gulp.task('default', ['help']);
 
 gulp.task('vet', function () {
-    log('Analysing source with JSHint and JSCS');
+    log('VET: analysing source with JSHint and JSCS');
 
     return gulp
         .src(config.alljs)
@@ -26,7 +26,7 @@ gulp.task('vet', function () {
 });
 
 gulp.task('fonts', ['clean-fonts'], function () {
-    log('Copying fonts');
+    log('FONTS: copying fonts');
 
     return gulp
         .src(config.fonts)
@@ -34,7 +34,7 @@ gulp.task('fonts', ['clean-fonts'], function () {
 });
 
 gulp.task('images', ['clean-images'], function () {
-    log('Compressing and copying images');
+    log('IMAGES: compressing and copying images');
 
     return gulp
         .src(config.images)
@@ -43,7 +43,7 @@ gulp.task('images', ['clean-images'], function () {
 });
 
 gulp.task('styles', ['clean-styles'], function () {
-    log('Compiling Less --> CSS');
+    log('STYLES: compiling Less --> CSS');
 
     return gulp
         .src(config.less)
@@ -57,7 +57,7 @@ gulp.task('styles', ['clean-styles'], function () {
 
 gulp.task('clean', function (done) {
     var delConfig = [].concat(config.build, config.temp);
-    log('Cleaning: ' + $.util.colors.blue(delConfig));
+    log('CLEAN: cleaning: ' + $.util.colors.blue(delConfig));
     del(delConfig, done);
 });
 
@@ -83,14 +83,15 @@ gulp.task('clean-code', function (done) {
 });
 
 gulp.task('less-watcher', function () {
+    log('LESS-WATCHER: watching less files ');
     gulp.watch([config.less], ['styles']); // watch the dirs (1st parm) and kick the tasks (2nd parm)
 });
 
 gulp.task('template-cache', ['clean-code'], function () {
-    log('Creating AngularJS $templateCache');
+    log('TEMPLATE-CACHE: creating AngularJS $templateCache');
 
     return gulp
-        .src(config.htmlTemplates)
+        .src(config.html)
         .pipe($.minifyHtml({empty: true})) // remove any empty tags in HTML
         .pipe($.angularTemplatecache(
             config.templateCache.file, // location of the file
@@ -99,30 +100,60 @@ gulp.task('template-cache', ['clean-code'], function () {
         .pipe(gulp.dest(config.temp));
 });
 
-gulp.task('wiredep', function () {
-    log('Wire up the bower css, js and our app js into the html');
+gulp.task('wiredep', ['vet'], function () {
+    log('WIREDEP: injecting the bower css, js and our app js into the html');
     var options = config.getWiredepDefaultOptions();
     var wiredep = require('wiredep').stream;
 
     return gulp
         .src(config.index)
         .pipe(wiredep(options))
-        .pipe($.inject(gulp.src(config.js)))
+        .pipe($.inject(gulp.src(config.js), {read: false}))
         .pipe(gulp.dest(config.client));
 });
 
-gulp.task('inject', ['wiredep', 'styles'], function () {
-    log('Wire up our app css into the html, after first calling Less and wiredep');
+gulp.task('inject', ['wiredep', 'styles', 'template-cache'], function () {
+    log('INJECT: injecting our app css into the html, after WIREDEP, STYLES and TEMPLATE-CACHE');
+
+    var templateCache = config.temp + config.templateCache.file;
 
     return gulp
         .src(config.index)
         .pipe($.inject(gulp.src(config.css)))
+        .pipe($.inject(gulp.src(templateCache, {read: false}), {
+            starttag: '<!-- inject:templates:js -->' // see index.html
+        }))
         .pipe(gulp.dest(config.client));
 });
 
-gulp.task('serve-dev', ['inject'], function () {
-    var isDev = true;
+gulp.task('optimize', ['inject'], function () {
+    log('OPTIMIZE: optimizing the javascript, css, html');
 
+    var assets = $.useref.assets({searchPath: './'});
+    var templateCache = config.temp + config.templateCache.file;
+
+    return gulp
+        .src(config.index)
+        .pipe($.plumber())
+        .pipe(assets) // find all the assets
+        .pipe(assets.restore()) // concatenate them to app's and lib's
+        .pipe($.useref()) // merge all links inside the index.html
+        .pipe(gulp.dest(config.build));
+});
+
+gulp.task('serve-build', ['optimize'], function () {
+    log('SERVE-BUILD: starting serve in BUILD mode');
+    serve(false /* isDev */);
+});
+
+gulp.task('serve-dev', ['inject'], function () {
+    log('SERVE-BUILD: starting serve in DEV mode');
+    serve(true /* isDev */);
+});
+
+/////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
+
+function serve(isDev) {
     var nodeOptions = {
         script: config.nodeServer, // app.js
         delayTime: 1, // 1 second delay
@@ -133,31 +164,29 @@ gulp.task('serve-dev', ['inject'], function () {
         watch: [config.server] // define the files to restart on
     };
 
+    log('FUNCTION SERVE: starting nodemon in ' + nodeOptions.env.NODE_ENV.toUpperCase() + ' mode');
+
     return $.nodemon(nodeOptions)
         //.on('restart', ['vet'], function (ev) { // it seems that 'vet' is not kicked off
         .on('restart', function (ev) {
-            log('*** nodemon restarting...');
-            log('files changed on restart:\n' + ev);
+            log('FUNCTION SERVE: nodemon restarted');
+            log('FUNCTION SERVE: files changed on restart:\n' + ev);
             setTimeout(function () {
-                browserSync.notify('BrowserSync is reloading now...');
+                browserSync.notify('FUNCTION SERVE: BrowserSync is reloading now...');
                 browserSync.reload({stream: false}); // don't pull the gulp stream (but you can if you want!)
             }, config.browserReloadDelay);
-            log('*** nodemon restarted');
         })
         .on('start', function () {
-            log('*** nodemon starting...');
-            startBrowserSync();
-            log('*** nodemon started');
+            log('FUNCTION SERVE: nodemon started');
+            startBrowserSync(isDev);
         })
         .on('crash', function () {
-            log('*** nodemon crashed: script crashed for some reason');
+            log('FUNCTION SERVE: nodemon crashed: script crashed for some reason');
         })
         .on('exit', function () {
-            log('*** nodemon exited cleanly');
+            log('FUNCTION SERVE: nodemon exited cleanly');
         });
-});
-
-/////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
+}
 
 function changeEvent(event) {
     // unfortunately this RegExp of John Papa does not work:
@@ -168,42 +197,49 @@ function changeEvent(event) {
     log('File ' + event.path + ' ' + event.type);
 }
 
-function startBrowserSync() {
+function startBrowserSync(isDev) {
     if (args.nosync || browserSync.active) {
         return;
     }
 
-    log('Starting browser-sync on port ' + port);
+    log('FUNCTION STARTBROWSERSYNC: starting BrowserSync on port ' + port);
 
-    gulp.watch([config.less], ['styles']) // watch the dirs (1st parm) and kick the tasks (2nd parm)
-        .on('change', function (event) {
-            changeEvent(event);
-        });
+    if (isDev) {
+        // watch the dirs (1st parm) and kick the tasks (2nd parm)
+        gulp.watch([config.less], ['styles'])
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    } else {
+        // watch the dirs (1st parm) and kick the tasks (2nd parm)
+        gulp.watch([config.less, config.js, config.html], ['optimize', browserSync.reload])
+            .on('change', function (event) {
+                changeEvent(event);
+            });
+    }
 
-    // don't watch Less files
-    // inject changes only, otherwise everything
-    // reloadDelay is in ms
     var options = {
         proxy: 'localhost:' + port,
         port: 3000,
-        files: [
+        files: isDev ? [
             config.client + '**/*.*',
-            '!' + config.less,
+            '!' + config.less, // don't watch less files
             config.temp + '**/*.css'
-        ],
+        ] : [], // don't watch these files in build mode
         ghostMode: {
             clicks: true,
             location: true,
             forms: true,
             scroll: true
         },
-        injectChanges: true,
+        injectChanges: true, // inject changes only, otherwise everything
         logFileChanges: true,
-        logLevel: 'debug',
-        logPrefix: 'gulp-patterns',
+        logLevel: 'warn', // 'debug', 'info', 'warn' or 'silent'
+        logPrefix: 'BROWSERSYNC', // was initially 'gulp-patterns'
         notify: true,
-        reloadDelay: 0
+        reloadDelay: 2000 // reloadDelay in ms
     };
+
     browserSync(options);
 }
 
@@ -220,6 +256,6 @@ function log(msg) {
             }
         }
     } else {
-        $.util.log($.util.colors.blue(msg));
+        $.util.log($.util.colors.yellow(msg));
     }
 }
