@@ -149,9 +149,43 @@ gulp.task('optimize', ['inject'], function () {
         .pipe($.ngAnnotate())
         .pipe($.uglify()) // minify and mangle the js files
         .pipe(jsAppFilter.restore()) // restore filter to all files
+        .pipe($.rev()) // app.js --> app-j5l4jir.js
         .pipe(assets.restore()) // concatenate them to app's and lib's
         .pipe($.useref()) // merge all links inside the index.html
+        .pipe($.revReplace()) // replace the new hash tags inside index.html
+        .pipe(gulp.dest(config.build))
+        .pipe($.rev.manifest()) // create a manifest for the hashed files
         .pipe(gulp.dest(config.build));
+});
+
+/**
+ * Bump the version
+ * --type=pre will bump the prerelease version *.*.*-x
+ * --type=patch or no flag will bump the patch version *.*.x
+ * --type=minor will bump the minor version *.x.*
+ * --type=major will bump the major version x.*.*
+ * --version=1.2.3 will bump to a specific version and ignore other flags
+ */
+gulp.task('bump', function () {
+    var msg = 'BUMP: bumping versions';
+    var type = args.type;
+    var version = args.version;
+    var options = {};
+
+    if (version) {
+        options.version = version;
+        msg += ' to ' + version;
+    } else {
+        options.type = type;
+        msg += ' to ' + type;
+    }
+    log(msg);
+
+    return gulp
+        .src(config.packages)
+        .pipe($.bump(options))
+        .pipe($.print())
+        .pipe(gulp.dest(config.root));
 });
 
 gulp.task('serve-build', ['optimize'], function () {
