@@ -4,6 +4,8 @@ var args = require('yargs').argv;
 var browserSync = require('browser-sync');
 var config = require('./gulp.config')(); // .js may be left out
 var del = require('del');
+var path = require('path');
+var _ = require('lodash');
 var $ = require('gulp-load-plugins')({lazy: true});
 var port = process.env.PORT || config.defaultPort;
 
@@ -126,8 +128,21 @@ gulp.task('inject', ['wiredep', 'styles', 'template-cache'], function () {
         .pipe(gulp.dest(config.client));
 });
 
-gulp.task('optimize', ['inject'], function () {
-    log('OPTIMIZE: optimizing the javascript, css, html');
+gulp.task('build', ['optimize', 'fonts', 'images'], function () {
+    log('BUILD: running `optimize` task and copying fonts and images');
+
+    var msg = {
+        title: 'BUILD: gulp build',
+        subtitle: 'Deployed to the build folder',
+        message: 'Running `gulp serve-build`'
+    };
+    del(config.temp);
+    log(msg);
+    notify(msg);
+});
+
+gulp.task('optimize', ['inject', 'test'], function () {
+    log('OPTIMIZE: optimizing the javascript, css, html; injecting and unit testing');
 
     var assets = $.useref.assets({searchPath: './'});
     var cssFilter = $.filter('**/' + config.optimized.css);
@@ -188,7 +203,7 @@ gulp.task('bump', function () {
         .pipe(gulp.dest(config.root));
 });
 
-gulp.task('serve-build', ['optimize'], function () {
+gulp.task('serve-build', ['build'], function () {
     log('SERVE-BUILD: starting serve in BUILD mode');
     serve(false /* isDev */);
 });
@@ -196,6 +211,14 @@ gulp.task('serve-build', ['optimize'], function () {
 gulp.task('serve-dev', ['inject'], function () {
     log('SERVE-BUILD: starting serve in DEV mode');
     serve(true /* isDev */);
+});
+
+gulp.task('test', ['vet', 'template-cache'], function (done) {
+    startTests(true /* singleRun */, done);
+});
+
+gulp.task('autotest', ['vet', 'template-cache'], function (done) {
+    startTests(false /* continuously keep running and watching our files */, done);
 });
 
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
@@ -244,6 +267,17 @@ function changeEvent(event) {
     log('File ' + event.path + ' ' + event.type);
 }
 
+function notify(options) {
+    var notifier = require('node-notifier');
+    var notifyOptions = {
+        sound: 'Bottle',
+        contentImage: path.join(__dirname, 'gulp.png'),
+        icon: path.join(__dirname, 'gulp.png')
+    };
+    _.assign(notifyOptions, options); // assign is a lodash function
+    notifier.notify(notifyOptions);
+}
+
 function startBrowserSync(isDev) {
     if (args.nosync || browserSync.active) {
         return;
@@ -288,6 +322,31 @@ function startBrowserSync(isDev) {
     };
 
     browserSync(options);
+}
+
+function startTests(singleRun, done) {
+    // we do require here because it's the only place we are going to use karma
+    var karma = require('karma').server;
+    var excludeFiles = [];
+    var serverSpecs = config.serverIntegrationSpecs;
+
+    excludeFiles = serverSpecs;
+
+    karma.start({
+        configFile: __dirname + '/karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun // convert to boolean (not-not)
+    }, karmaCompleted);
+
+    // we define the function here because we'll use it only inside startTests function
+    function karmaCompleted(karmaResult) {
+        log('KARMA: karma completed!');
+        if (karmaResult === 1) {
+            done('KARMA: tests failed with code ' + karmaResult);
+        } else {
+            done();
+        }
+    }
 }
 
 function clean(path, done) {
