@@ -1,0 +1,603 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "gulpfile.js",
+			"settings":
+			{
+				"buffer_size": 13840,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "gulp.config.js",
+			"settings":
+			{
+				"buffer_size": 4303,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "package.json",
+			"settings":
+			{
+				"buffer_size": 2113,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/client/specs.html",
+			"settings":
+			{
+				"buffer_size": 5945,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 375.0,
+		"selected_items":
+		[
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"add folder",
+				"Project: Add Folder"
+			],
+			[
+				"find",
+				"FindKeyConflicts: All Conflicts"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"c#",
+				"Set Syntax: C#"
+			],
+			[
+				"csh",
+				"CSharpreter: Interpret"
+			],
+			[
+				"pa",
+				"Package Control: Remove Package"
+			]
+		],
+		"width": 514.0
+	},
+	"console":
+	{
+		"height": 287.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/ar/_github/papagulp/package.json",
+		"/D/ar/_github/papagulp/npm-installs-testing.txt",
+		"/D/ar/_github/papagulp/build/rev-manifest.json",
+		"/D/ar/_github/papagulp/src/client/index.html",
+		"/D/ar/_github/papagulp/.tmp/styles.css",
+		"/D/ar/_github/papagulp/build/index.html",
+		"/D/ar/_github/papagulp/bower.json",
+		"/D/ar/_github/papagulp/.bowerrc",
+		"/D/ar/_github/papagulp/bower_components/moment/.bower.json",
+		"/D/ar/_github/papagulp/bower_components/bootstrap/package.json",
+		"/D/ar/_github/papagulp/bower_components/bardjs/.bower.json",
+		"/D/ar/_github/papagulp/bower_components/angular/README.md",
+		"/D/ar/_github/papagulp/bower_components/bardjs/bower.json",
+		"/D/ar/_github/papagulp/bower_components/angular-ui-router/bower.json",
+		"/D/ar/_github/papagulp/bower_components/angular-ui-router/.bower.json",
+		"/D/ar/_github/papagulp/bower_components/angular-sanitize/angular-sanitize.js",
+		"/D/ar/_github/papagulp/bower_components/angular-sanitize/README.md",
+		"/D/ar/_github/papagulp/bower_components/angular-mocks/README.md",
+		"/D/ar/_github/papagulp/bower_components/angular-animate/README.md",
+		"/D/ar/_github/papagulp/.jscsrc",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/D/ar/_github/papagulp/src/client/app/customers/customer-detail.controller.js",
+		"/D/ar/_github/papagulp/gulpfile.js",
+		"/D/ar/_github/papagulp/src/gulpfile.js",
+		"/D/ar/_github/papagulp/lib/angular-animate/README.md",
+		"/D/ar/_github/papagulp/.gitignore",
+		"/D/ar/_github/papagulp/lib/angular-mocks/README.md",
+		"/D/ar/_github/papagulp/lib/angular-sanitize/README.md",
+		"/D/ar/_github/papagulp/lib/angular-ui-router/.bower.json",
+		"/D/ar/_github/papagulp/lib/angular-ui-router/bower.json",
+		"/D/ar/_github/papagulp/lib/angular/README.md",
+		"/D/ar/_github/papagulp/lib/bardjs/.bower.json",
+		"/D/ar/_github/papagulp/lib/bardjs/bower.json",
+		"/D/ar/_github/papagulp/lib/moment/.bower.json",
+		"/D/ar/_github/papagulp/lib/moment/bower.json",
+		"/D/ar/_github/papagulp/node_modules/body-parser/node_modules/debug/bower.json",
+		"/D/ar/_github/papagulp/node_modules/compression/node_modules/debug/bower.json",
+		"/D/ar/_github/papagulp/node_modules/express/node_modules/debug/bower.json",
+		"/D/ar/_github/papagulp/node_modules/morgan/node_modules/debug/bower.json",
+		"/D/ar/_github/workflows/builds/development/css/style.css",
+		"/D/ar/_github/workflows/builds/production/css/style.css",
+		"/D/ar/_github/workflows/components/sass/_base.scss",
+		"/D/ar/_github/workflows/builds/development/js/data.json",
+		"/D/ar/_github/workflows/components/coffee/tagline.coffee",
+		"/D/ar/_github/workflows/builds/development/index.html",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/User/PlainTasks.sublime-settings",
+		"/D/ar/_werk/_diversen/mytasks.todo",
+		"/D/ar/_werk/mytasks.todo",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/User/Default (Windows).sublime-keymap",
+		"/D/ar/_git/workflows/test.html",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/AdvancedNewFile/README.md",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/AdvancedNewFile/AdvancedNewFile.sublime-settings",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/User/Side Bar.sublime-settings",
+		"/D/ar/_git/workflows/gulpfile.js",
+		"/D/ar/_git/workflows/builds/development/index.html",
+		"/C/Users/ar/AppData/Roaming/Sublime Text 2/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/D/ar/_git/workflows/builds/development/css/style.css",
+		"/D/ar/_git/workflows/.gitignore",
+		"/D/ar/software/sublime text 2/Themes/Color Schemes - Extra/Ryan Light.tmTheme",
+		"/D/ar/software/sublime text 2/Themes/Color Schemes - Extra/Notepad2.tmTheme",
+		"/D/ar/software/sublime text 2/Themes/Color Schemes - Extra/IR_White.tmTheme",
+		"/D/ar/software/sublime text 2/Themes/Color Schemes - Extra/IR_Black.tmTheme",
+		"/D/ar/software/sublime text 2/Themes/Theme - GitHub/GitHub.tmTheme",
+		"/D/ar/software/sublime text 2/Themes/Theme - Espresso Tutti/Espresso Tutti.tmTheme",
+		"/D/ontwikkeling/Cce/Doc/Ontwerp/COW/Concern FLOWAV/NwkEABs/KlokAanvoerBriefControleur.cs"
+	],
+	"find":
+	{
+		"height": 40.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"D:\\ar\\_github\\papagulp"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"build:css",
+			"build:js",
+			"lib/",
+			"\"lib\"",
+			"lib",
+			"bower_components",
+			"new"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"lib"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "gulpfile.js",
+					"settings":
+					{
+						"buffer_size": 13840,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								13840,
+								13840
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"syntax": "Packages/Better JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 7308.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "gulp.config.js",
+					"settings":
+					{
+						"buffer_size": 4303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"syntax": "Packages/Better JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 270.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "package.json",
+					"settings":
+					{
+						"buffer_size": 2113,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2007,
+								2007
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"syntax": "Packages/Better JavaScript/JSON.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 594.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/client/specs.html",
+					"settings":
+					{
+						"buffer_size": 5945,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"syntax": "Packages/AngularJS/AngularJS.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 324.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 206.0
+	},
+	"output.jslint_result_view":
+	{
+		"height": 120.0
+	},
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/D/ar/_github/papagulp4/papagulp4.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 302.0,
+	"status_bar_visible": true
+}

@@ -68,6 +68,7 @@
     "mocha-clean": "^0.4.0",
     "node-notifier": "^4.2.1",
     "phantomjs": "^1.9.16",
+    "pngquant": "^0.4.0",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0",
     "wiredep": "^2.2.2",
