@@ -104,7 +104,7 @@ gulp.task('template-cache', ['clean-code'], function () {
 
 gulp.task('wiredep', ['vet'], function () {
     log('WIREDEP: injecting the bower css, js and our app js into the html');
-    var options = config.getWiredepDefaultOptions();
+    var options = config.bower;
     var wiredep = require('wiredep').stream;
 
     return gulp
@@ -139,6 +139,40 @@ gulp.task('build', ['optimize', 'fonts', 'images'], function () {
     del(config.temp);
     log(msg);
     notify(msg);
+});
+
+gulp.task('serve-specs', ['build-specs'], function (done) {
+    log('SERVE-SPECS: running the spec runner');
+    serve(true /* isDev */, true /* specRunner */);
+    done();
+});
+
+gulp.task('build-specs', ['template-cache'], function () {
+    log('BUILD-SPECS: building the spec runner');
+
+    var wiredep = require('wiredep').stream;
+    var options = config.bower;
+    var specs = config.specs;
+
+    options.devDependencies = true;
+
+    if (args.startServers) {
+        specs = [].concat(specs, config.serverIntegrationSpecs);
+    }
+
+    return gulp
+        .src(config.specRunner)
+        .pipe(wiredep(options)) // inject bower files
+        .pipe($.inject(gulp.src(config.testLibraries),
+            {name: 'inject:testlibraries', read: false}))
+        .pipe($.inject(gulp.src(config.js))) // our js files -> default injection point, no need for name
+        .pipe($.inject(gulp.src(config.specHelpers),
+            {name: 'inject:spechelpers', read: false}))
+        .pipe($.inject(gulp.src(specs),
+            {name: 'inject:specs', read: false}))
+        .pipe($.inject(gulp.src(config.temp + config.templateCache.file),
+            {name: 'inject:templates', read: false}))
+        .pipe(gulp.dest(config.client));
 });
 
 gulp.task('optimize', ['inject', 'test'], function () {
@@ -223,7 +257,7 @@ gulp.task('autotest', ['vet', 'template-cache'], function (done) {
 
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
-function serve(isDev) {
+function serve(isDev, specRunner) {
     var nodeOptions = {
         script: config.nodeServer, // app.js
         delayTime: 1, // 1 second delay
@@ -248,7 +282,7 @@ function serve(isDev) {
         })
         .on('start', function () {
             log('FUNCTION SERVE: nodemon started');
-            startBrowserSync(isDev);
+            startBrowserSync(isDev, specRunner);
         })
         .on('crash', function () {
             log('FUNCTION SERVE: nodemon crashed: script crashed for some reason');
@@ -278,7 +312,7 @@ function notify(options) {
     notifier.notify(notifyOptions);
 }
 
-function startBrowserSync(isDev) {
+function startBrowserSync(isDev, specRunner) {
     if (args.nosync || browserSync.active) {
         return;
     }
@@ -321,16 +355,32 @@ function startBrowserSync(isDev) {
         reloadDelay: 0 // reloadDelay in ms
     };
 
+    if (specRunner) {
+        options.startPath = config.specRunnerFile; // use our own specRunnerFile instead of standard html
+    }
+
     browserSync(options);
 }
 
 function startTests(singleRun, done) {
-    // we do require here because it's the only place we are going to use karma
+    var child; // variable to run the forked process
+    // we do require child_process and karma here because it's the only place we are going to use them
+    var fork = require('child_process').fork;
     var karma = require('karma').server;
     var excludeFiles = [];
     var serverSpecs = config.serverIntegrationSpecs;
 
-    excludeFiles = serverSpecs;
+    if (args.startServers) { // gulp test --startServers
+        log('FORK: starting test server');
+        var savedEnv = process.env;
+        savedEnv.NODE_ENV = 'dev';
+        savedEnv.PORT = 8888;
+        child = fork(config.nodeServer);
+    } else {
+        if (serverSpecs && serverSpecs.length) { // is serverSpecs are configured as an array
+            excludeFiles = serverSpecs;
+        }
+    }
 
     karma.start({
         configFile: __dirname + '/karma.conf.js',
@@ -341,6 +391,10 @@ function startTests(singleRun, done) {
     // we define the function here because we'll use it only inside startTests function
     function karmaCompleted(karmaResult) {
         log('KARMA: karma completed!');
+        if (child) {
+            log('FORK: shutting down the child process');
+            child.kill();
+        }
         if (karmaResult === 1) {
             done('KARMA: tests failed with code ' + karmaResult);
         } else {

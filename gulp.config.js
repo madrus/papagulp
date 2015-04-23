@@ -4,6 +4,7 @@ module.exports = function () {
     var report = './report';
     var root = './';
     var server = './src/server/';
+    var specRunnerFile = 'specs.html';
     var temp = './.tmp/';
     var wiredep = require('wiredep'); // here: to get the list of Bower files
     var bowerFiles = wiredep({devDependencies: true})['js'];
@@ -75,6 +76,19 @@ module.exports = function () {
         ],
 
         /**
+         * specs.html, our HTML spec runner
+         */
+        specRunner: client + specRunnerFile,
+        specRunnerFile: specRunnerFile,
+        testLibraries: [
+            'node_modules/mocha/mocha.js',
+            'node_modules/chai/chai.js',
+            'node_modules/mocha-clean/index.js',
+            'node_modules/sinon-chai/lib/sinon-chai.js',
+        ],
+        specs: [clientApp + '**/*.spec.js'],
+
+        /**
          * Karma and testing settings
          */
         specHelpers: [client + 'test-helpers/*.js'],
@@ -87,19 +101,20 @@ module.exports = function () {
         nodeServer: './src/server/app.js'
     };
 
-    config.getWiredepDefaultOptions = function () {
-        return {
-            bowerJson: config.bower.json,
-            directory: config.bower.directory,
-            ignorePath: config.bower.ignorePath
-        };
-    };
-
+    config.bower = getWiredepDefaultOptions();
     config.karma = getKarmaOptions();
 
     return config;
 
     ///////////////////////////////
+
+    function getWiredepDefaultOptions() {
+        return {
+            bowerJson: config.bower.json,
+            directory: config.bower.directory,
+            ignorePath: config.bower.ignorePath
+        };
+    }
 
     function getKarmaOptions() {
         var options = {
