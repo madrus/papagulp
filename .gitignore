@@ -12,12 +12,12 @@ obj
 node_modules
 bower_components
 build
-#.tmp
 
 # Ignore Test reporters
 ###################
 **/test/coverage
 report
+reportcoverage
 
 # Ignore My Files
 .tmp
