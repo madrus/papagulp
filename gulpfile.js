@@ -337,15 +337,15 @@ function startBrowserSync(isDev, specRunner) {
     log('STARTBROWSERSYNC: starting BrowserSync on port ' + port);
 
     if (isDev) {
-        // watch the dirs (1st parm) and kick the tasks (2nd parm)
-        gulp.watch([config.less], ['styles'])
+        $.watch([config.less], gulp.series('styles'))
             .on('change', function (event) {
                 log('STARTBROWSERSYNC: change in less files detected, syncing, no reload');
                 changeEvent(event);
             });
     } else {
+        var dirs2watch = [].concat(config.less, config.js, config.html);
         // watch the dirs (1st parm) and kick the tasks (2nd parm)
-        gulp.watch([config.less, config.js, config.html], ['optimize', browserSync.reload])
+        $.watch(dirs2watch, gulp.series('optimize', browserSync.reload))
             .on('change', function (event) {
                 log('STARTBROWSERSYNC: change in files detected, optimizing and reloading');
                 changeEvent(event);

@@ -31,6 +31,9 @@ reportcoverage
 *.ns
 journal
 
+# Ignore Sublime Text #
+*.sublime*
+
 # Ignore Web Storm #
 .idea
 
