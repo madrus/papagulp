@@ -1,4 +1,6 @@
 module.exports = function () {
+    //var browsers = ['google chrome', 'firefox'];
+    var browsers = ['google chrome'];
     var client = './src/client/';
     var clientApp = client + 'app/';
     var report = './report';
@@ -61,7 +63,7 @@ module.exports = function () {
          * browser sync
          */
         browserReloadDelay: 1000,
-
+        browsers: browsers,
         /**
          * Bower and NPM locations
          */

@@ -12,6 +12,38 @@ var port = process.env.PORT || config.defaultPort;
 //gulp.task('help', $.taskListing);
 //gulp.task('default', ['help']);
 
+/**
+ * Bump the version
+ * --type=pre will bump the prerelease version *.*.*-x
+ * --type=patch or no flag will bump the patch version *.*.x
+ * --type=minor will bump the minor version *.x.*
+ * --type=major will bump the major version x.*.*
+ * --version=1.2.3 will bump to a specific version and ignore other flags
+ */
+gulp.task('bump', function () {
+    var msg = 'BUMP: bumping versions';
+    var type = args.type;
+    var version = args.version;
+    var options = {};
+
+    if (version) {
+        options.version = version;
+        msg += ' to ' + version;
+    } else if (type !== undefined) {
+        options.type = type;
+        msg += ' to ' + type;
+    } else {
+        msg += ' to patch';
+    }
+    log(msg);
+
+    return gulp
+        .src(config.packages)
+        .pipe($.bump(options))
+        .pipe($.print())
+        .pipe(gulp.dest(config.root));
+});
+
 gulp.task('clean', function (done) {
     var delConfig = [].concat(config.build, config.temp);
     log('CLEAN: cleaning: ' + $.util.colors.blue(delConfig));
@@ -70,12 +102,6 @@ gulp.task('template-cache', gulp.series('clean-code', function () {
         .pipe(gulp.dest(config.temp));
 }));
 
-gulp.task('test', gulp.series(
-    gulp.parallel('vet', 'template-cache'),
-    function (done) {
-        startTests(true /* singleRun */, done);
-    }));
-
 gulp.task('styles', gulp.series('clean-styles', function () {
     log('STYLES: compiling Less --> CSS');
 
@@ -108,8 +134,27 @@ gulp.task('images', gulp.series('clean-images', function () {
 
 gulp.task('less-watcher', function () {
     log('LESS-WATCHER: watching less files ');
-    gulp.watch([config.less], ['styles']); // watch the dirs (1st parm) and kick the tasks (2nd parm)
+    gulp.watch([config.less], gulp.series('styles')); // watch the dirs (1st parm) and kick the tasks (2nd parm)
 });
+
+/**
+ * --startServers: also test server side tests
+ */
+gulp.task('test', gulp.series(
+    gulp.parallel('vet', 'template-cache'),
+    function (done) {
+        startTests(true /* singleRun */, done);
+    }));
+
+/**
+ * --startServers: also test server side tests
+ */
+gulp.task('autotest', gulp.series(
+    gulp.parallel('vet', 'template-cache'),
+    function (done) {
+        log('AUTOTEST: starting autotest');
+        startTests(false /* continuously keep running and watching our files */, done);
+    }));
 
 gulp.task('wiredep', gulp.series('vet', function () {
     log('WIREDEP: injecting the bower css, js and our app js into the html');
@@ -173,24 +218,8 @@ gulp.task('optimize', gulp.series(
             .pipe(gulp.dest(config.build));
     }));
 
-gulp.task('build', gulp.series(
-    gulp.parallel('optimize', 'fonts', 'images'),
-    function (done) {
-        log('BUILD: running `optimize` task and copying fonts and images');
-
-        var msg = {
-            title: 'BUILD: gulp build',
-            subtitle: 'Deployed to the build folder',
-            message: 'Running `gulp serve-build`'
-        };
-        del(config.temp);
-        log(msg);
-        notify(msg);
-        done();
-    }));
-
 gulp.task('build-specs', gulp.series('template-cache', function () {
-    log('BUILD-SPECS: building the spec runner');
+    log('BUILD-SPECS: building the spec runner html page');
 
     var wiredep = require('wiredep').stream;
     var options = config.bower;
@@ -218,45 +247,32 @@ gulp.task('build-specs', gulp.series('template-cache', function () {
         .pipe(gulp.dest(config.client));
 }));
 
+/**
+ * --startServers: while building run server side tests
+ */
+gulp.task('build', gulp.series(
+    gulp.parallel('optimize', 'fonts', 'images'),
+    function (done) {
+        log('BUILD: running `optimize` task and copying fonts and images');
+
+        var msg = {
+            title: 'BUILD: gulp build',
+            subtitle: 'Deployed to the build folder',
+            message: 'Running `gulp serve-build`'
+        };
+        del(config.temp);
+        log(msg);
+        notify(msg);
+        done();
+    }));
+
+/**
+ * --startServers: include the server side tests
+ */
 gulp.task('serve-specs', gulp.series('build-specs', function (done) {
     log('SERVE-SPECS: running the spec runner');
     serve(true /* isDev */, true /* specRunner */);
     done();
-}));
-
-/**
- * Bump the version
- * --type=pre will bump the prerelease version *.*.*-x
- * --type=patch or no flag will bump the patch version *.*.x
- * --type=minor will bump the minor version *.x.*
- * --type=major will bump the major version x.*.*
- * --version=1.2.3 will bump to a specific version and ignore other flags
- */
-gulp.task('bump', function () {
-    var msg = 'BUMP: bumping versions';
-    var type = args.type;
-    var version = args.version;
-    var options = {};
-
-    if (version) {
-        options.version = version;
-        msg += ' to ' + version;
-    } else {
-        options.type = type;
-        msg += ' to ' + type;
-    }
-    log(msg);
-
-    return gulp
-        .src(config.packages)
-        .pipe($.bump(options))
-        .pipe($.print())
-        .pipe(gulp.dest(config.root));
-});
-
-gulp.task('serve-build', gulp.series('build', function () {
-    log('SERVE-BUILD: starting serve in BUILD mode');
-    serve(false /* isDev */);
 }));
 
 gulp.task('serve-dev', gulp.series('inject', function () {
@@ -264,12 +280,10 @@ gulp.task('serve-dev', gulp.series('inject', function () {
     serve(true /* isDev */);
 }));
 
-gulp.task('autotest', gulp.series(
-    gulp.parallel('vet', 'template-cache'),
-    function (done) {
-        log('AUTOTEST: starting autotest');
-        startTests(false /* continuously keep running and watching our files */, done);
-    }));
+gulp.task('serve-build', gulp.series('build', function () {
+    log('SERVE-BUILD: starting serve in BUILD mode');
+    serve(false /* isDev */);
+}));
 
 /////////////// FUNCTIONS \\\\\\\\\\\\\\\\\
 
@@ -293,7 +307,8 @@ function serve(isDev, specRunner) {
             log('SERVE: files changed on restart:\n' + ev);
             setTimeout(function () {
                 browserSync.notify('FUNCTION SERVE: browser-sync is reloading now...');
-                browserSync.reload({stream: false}); // don't pull the gulp stream (but you can if you want!)
+                // don't pull the gulp stream (but you can if you want!)
+                browserSync.reload({stream: false});
             }, config.browserReloadDelay);
         })
         .on('start', function () {
@@ -329,8 +344,11 @@ function notify(options) {
 }
 
 function startBrowserSync(isDev, specRunner) {
-    if (args.nosync || browserSync.active) {
-        log('STARTBROWSERSYNC: --nosync or browser-sync');
+    if (args.nosync) {
+        log('STARTBROWSERSYNC: not running with --nosync ');
+        return;
+    } else if (browserSync.active) {
+        log('STARTBROWSERSYNC: browser-sync already running');
         return;
     }
 
@@ -343,9 +361,9 @@ function startBrowserSync(isDev, specRunner) {
                 changeEvent(event);
             });
     } else {
-        var dirs2watch = [].concat(config.less, config.js, config.html);
+        var watchedFolders = [].concat(config.less, config.js, config.html);
         // watch the dirs (1st parm) and kick the tasks (2nd parm)
-        $.watch(dirs2watch, gulp.series('optimize', browserSync.reload))
+        $.watch(watchedFolders, gulp.series('optimize', browserSync.reload))
             .on('change', function (event) {
                 log('STARTBROWSERSYNC: change in files detected, optimizing and reloading');
                 changeEvent(event);
@@ -367,11 +385,13 @@ function startBrowserSync(isDev, specRunner) {
             scroll: true
         },
         injectChanges: true, // inject changes only, otherwise everything
+        codeSync: true,
         logFileChanges: true,
-        logLevel: 'debug', // 'debug', 'info', 'warn' or 'silent'
+        logLevel: 'warn', // 'debug', 'info', 'warn' or 'silent'
         logPrefix: 'BROWSERSYNC', // was initially 'gulp-patterns'
         notify: true,
-        reloadDelay: 0 // reloadDelay in ms
+        reloadDelay: 1000, // reloadDelay in ms
+        browser: config.browsers
     };
 
     if (specRunner) {
